@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Curate: STRANGE IDEOGRAPH</title>
+  <script src="https://unpkg.com/alpinejs@3.13.7/dist/cdn.min.js" defer></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html {
+      color: white;
+      background: black;
+    }
+  </style>
+</head>
+<body>
+  <div 
+    class="w-full h-fit flex flex-col gap-6 justify-center items-center"
+    x-data="{
+      items: [],
+      page: 0,
+      stats: {},
+      async fetchItems() {
+        let response = await (await window.fetch(`/items/${this.page}`)).json()
+        this.items = response.data
+      },
+      async fetchStats() {
+        let response = await (await window.fetch('/stats')).json()
+        this.stats = response.data
+      },
+      async deleteItem(idx) {
+        let response = await (await window.fetch(`/item/${idx}`, {
+          method: 'DELETE'
+        })).json()
+        console.log(response.data)
+        if (response.ok) {
+          await this.fetchItems()
+          console.log(this.items[0])
+          await this.fetchStats()
+        } else {
+          throw Error('Unable to delete item.')
+        }
+      }
+    }">
+    <div 
+      class="fixed left-0 top-0 w-screen h-[3rem] flex gap-6 justify-center items-center bg-blue-900"
+      x-init="await fetchStats()">
+      <h1 class="text-xl">
+        STRANGE IDEOGRAPH
+      </h1>
+      <h1 class="text-xl">
+        Total: <span x-text="stats.total"></span>
+      </h1>
+      <h1 class="text-xl">
+        Page: <span x-text="page"></span>
+      </h1>
+    </div>
+    <div 
+      class="w-full h-fit flex gap-[2rem] flex-wrap justify-center pt-[5rem]"
+      x-init="await fetchItems()">
+      <template x-for="(item, idx) in items">
+        <div class="w-[24rem] h-fit">
+          <div class="w-[24rem] h-[24rem] bg-blue-600" x-text="item.if + ' / ' + item.a"></div>
+          <div class="w-[24rem] h-fit mt-[1rem] flex flex-wrap gap-[1rem] justify-center items-center">
+            <p class="text-md">
+              STRANGE IDEOGRAPH #<span x-text="page * 100 + idx"></span>
+            </p>
+            <button 
+              class="text-sm bg-blue-900 py-[0.3rem] px-[0.4rem]"
+              @click="await deleteItem(page*100+idx)">
+              Delete
+            </button>
+          </div>
+        </div>
+      </template>
+    </div>
+  </div>
+</body>
+</html>

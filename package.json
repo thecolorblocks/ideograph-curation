@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "scripts": {
+    "add": "node generate/index.js",
+    "serve": "node server/api.js"
+  },
+  "dependencies": {
+    "express": "^4.19.1",
+    "lowdb": "^7.0.1"
+  }
+}
