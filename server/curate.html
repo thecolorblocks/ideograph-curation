@@ -18,7 +18,7 @@
     class="w-full h-fit flex flex-col gap-6 justify-center items-center"
     x-data="{
       items: [],
-      page: 0,
+      page: 10,
       stats: {},
       async fetchItems() {
         let response = await (await window.fetch(`/items/${this.page}`)).json()
@@ -41,7 +41,8 @@
           throw Error('Unable to delete item.')
         }
       }
-    }">
+    }"
+    x-init="$watch('page', value => fetchItems())">
     <div 
       class="fixed left-0 top-0 w-screen h-[3rem] flex gap-6 justify-center items-center bg-blue-900"
       x-init="await fetchStats()">
@@ -60,19 +61,40 @@
       x-init="await fetchItems()">
       <template x-for="(item, idx) in items">
         <div class="w-[24rem] h-fit">
-          <div class="w-[24rem] h-[24rem] bg-blue-600" x-text="item.if + ' / ' + item.a"></div>
+          <iframe 
+            class="w-[24rem] h-[24rem]"
+            :src="`/curate/item/${btoa(JSON.stringify(item))}`">
+          </iframe>
           <div class="w-[24rem] h-fit mt-[1rem] flex flex-wrap gap-[1rem] justify-center items-center">
             <p class="text-md">
-              STRANGE IDEOGRAPH #<span x-text="page * 100 + idx"></span>
+              STRANGE IDEOGRAPH #<span x-text="page * 20 + idx"></span>
             </p>
+            <a
+              class="text-sm bg-blue-900 py-[0.3rem] px-[0.4rem]"
+              target="_blank"
+              :href="`/curate/item/${btoa(JSON.stringify(item))}`">
+              Expand
+            </a>
             <button 
               class="text-sm bg-blue-900 py-[0.3rem] px-[0.4rem]"
-              @click="await deleteItem(page*100+idx)">
+              @click="await deleteItem(page*20+idx)">
               Delete
             </button>
           </div>
         </div>
       </template>
+    </div>
+    <div class="w-full h-fit p-[5rem] flex gap-[2rem] justify-center items-center">
+      <button 
+        class="text-lg bg-blue-900 py-[0.6rem] px-[0.8rem]"
+        @click="page = Math.max(0, page-1)">
+        Prev
+      </button>
+      <button 
+        class="text-lg bg-blue-900 py-[0.6rem] px-[0.8rem]"
+        @click="page = Math.min(page+1, Math.ceil(stats.total/20)-1)">
+        Next
+      </button>
     </div>
   </div>
 </body>

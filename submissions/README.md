@@ -1,0 +1,1 @@
+All files are organized based on Discord username to track their submissions.

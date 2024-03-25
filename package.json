@@ -1,11 +1,13 @@
 {
   "type": "module",
   "scripts": {
-    "add": "node generate/index.js",
+    "add": "node generate/add.js",
+    "reset": "node generate/reset.js",
     "serve": "node server/api.js"
   },
   "dependencies": {
     "express": "^4.19.1",
-    "lowdb": "^7.0.1"
+    "lowdb": "^7.0.1",
+    "mustache": "^4.2.0"
   }
 }
