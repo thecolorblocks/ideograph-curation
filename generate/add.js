@@ -54,7 +54,11 @@ function generate() {
     p.p.y = randomFloat(-2, 2)
     p.isw = randomFloat(0.01, 1)
     p.iss = randomItem(isss)
-    p.steps = randomInt(2, 20)
+    if (p.if === "de Jong" || p.if === "Clifford") {
+      p.steps = randomInt(3, 6)
+    } else {
+      p.steps = randomInt(2, 5)
+    }
     p.color = randomItem(colors)
 
     collection.push(p)
