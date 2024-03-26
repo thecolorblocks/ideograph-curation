@@ -19,6 +19,7 @@
     x-data="{
       items: [],
       page: 25,
+      goPage: 0,
       stats: {},
       async fetchItems() {
         let response = await (await window.fetch(`/items/${this.page}`)).json()
@@ -95,6 +96,18 @@
         @click="page = Math.min(page+1, Math.ceil(stats.total/20)-1)">
         Next
       </button>
+      <div class="w-fit h-fit flex">
+        <input 
+          type="text" 
+          placeholder="Page"
+          x-model="goPage"
+          class="text-lg bg-gray-600 border border-blue-900 py-[0.6rem] px-[0.8rem]">
+        <button
+          class="text-lg bg-blue-900 py-[0.6rem] px-[0.8rem]"
+          @click="page = Number(goPage)">
+          Go
+        </button>
+      </div>
     </div>
   </div>
 </body>
