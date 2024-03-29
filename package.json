@@ -6,6 +6,7 @@
     "serve": "node server/api.js"
   },
   "dependencies": {
+    "@tensorflow/tfjs": "^4.17.0",
     "express": "^4.19.1",
     "lowdb": "^7.0.1",
     "mustache": "^4.2.0"
