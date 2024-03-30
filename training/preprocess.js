@@ -18,7 +18,7 @@ const badDownsampled = badShuffled.slice(startIndex, startIndex+db.data.collecti
 console.log(`Good sample size: ${db.data.collection.length}`)
 console.log(`Bad sample size (downsampled): ${badDownsampled.length}`)
 
-const n = 11
+const n = 10
 
 function* data() {
   for (let i = 0; i < db.data.collection.length; i++){
@@ -33,8 +33,7 @@ function* data() {
       item.p.y,
       item.isw,
       constants.ISSS.indexOf(item.iss),
-      item.steps,
-      constants.COLORS.indexOf(item.color)
+      item.steps
     ])
   }
 
@@ -50,8 +49,7 @@ function* data() {
       item.p.y,
       item.isw,
       constants.ISSS.indexOf(item.iss),
-      item.steps,
-      constants.COLORS.indexOf(item.color)
+      item.steps
     ])
   }
 }

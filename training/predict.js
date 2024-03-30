@@ -14,7 +14,7 @@ const db = await JSONFilePreset(config.db_path, defaultData)
 const model = await tf.loadLayersModel(`${rootdir}/training/model/model.json`)
 
 const threshold = 0.7
-const iterations = 1000
+const iterations = 100000
 let data = []
 let params = []
 
@@ -56,9 +56,8 @@ function randomInput() {
   // steps
   params.steps = randomInt(2, 7)
   input.push(params.steps)
-  // colors
+  // colors: only add colors to params since input data has no color dimension
   params.color = randomItem(constants.COLORS)
-  input.push(constants.COLORS.indexOf(params.color))
   
   return {input, params}
 }
@@ -69,7 +68,7 @@ for (let i = 0; i < iterations; i++) {
   params.push(result.params)
 }
 
-const inputData = tf.tensor2d(data, [data.length, 11])
+const inputData = tf.tensor2d(data, [data.length, 10])
 
 const predictions = model.predict(inputData)
 
