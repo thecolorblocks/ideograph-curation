@@ -3,10 +3,13 @@
   "scripts": {
     "add": "node generate/add.js",
     "reset": "node generate/reset.js",
-    "serve": "node server/api.js"
+    "serve": "node server/api.js",
+    "train": "node training/train.js",
+    "learn": "./learn.bash",
+    "predict": "node training/predict.js"
   },
   "dependencies": {
-    "@tensorflow/tfjs": "^4.17.0",
+    "@tensorflow/tfjs-node": "^4.17.0",
     "express": "^4.19.1",
     "lowdb": "^7.0.1",
     "mustache": "^4.2.0"
