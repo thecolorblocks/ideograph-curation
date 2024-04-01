@@ -2,19 +2,30 @@ import * as tf from '@tensorflow/tfjs-node';
 import rootdir from '../rootdir.js';
 import constants from '../generate/constants.js';
 import { randomItem, randomFloat, randomInt } from '../generate/random.js'
+import { hasFlag, getParam } from '../command.js'
 
 import { JSONFilePreset } from 'lowdb/node'
 import config from '../config.js'
 
+// Extract command-line arguments (excluding the first two default elements)
+const args = process.argv.slice(2)
+
 const defaultData = {
   collection: []
 }
-const db = await JSONFilePreset(config.db_path, defaultData)
 
-const model = await tf.loadLayersModel(`${rootdir}/training/model/model.json`)
+// Select model
+const modelname = getParam(args, '--model-name', true)
 
-const threshold = 0.7
-const iterations = 100000
+console.log(`Set to run model: ${modelname}`)
+
+const db = await JSONFilePreset(config[modelname].good_path, defaultData)
+const baddb = await JSONFilePreset(config[modelname].bad_path, defaultData)
+
+const model = await tf.loadLayersModel(`${rootdir}/training/${modelname}/model.json`)
+
+const threshold = 0.5
+const iterations = 1000
 let data = []
 let params = []
 
@@ -87,10 +98,21 @@ console.log(`Iterations: ${iterations}`)
 console.log(`Threshold: ${threshold}`)
 console.log(`Above threshold: ${paramsAboveThreshold.length}`)
 
-// Add predicted positive parameters to database db.json
-db.read()
-for (let i = 0; i < paramsAboveThreshold.length; i++) {
-  db.data.collection.push(paramsAboveThreshold[i])
-  db.write()
+// Print learning satistics
+const predictionPositivePct = paramsAboveThreshold.length / iterations * 100
+const dataPositivePct = db.data.collection.length / (db.data.collection.length+baddb.data.collection.length) * 100
+console.log(`Positive percentage convergence check:`)
+console.log(`- learning: ${predictionPositivePct}%`)
+console.log(`- actual: ${dataPositivePct}%`)
+
+// Dry run or not: that is the question
+if (hasFlag(args, '--dry-run')) {
+  console.log('Dry run. Nothing written to database.')
+} else {
+  db.read()
+  for (let i = 0; i < paramsAboveThreshold.length; i++) {
+    db.data.collection.push(paramsAboveThreshold[i])
+    db.write()
+  }
+  console.log(`Wrote to database: ${config[modelname].good_path}.`)
 }
-console.log('Wrote to db.json')

@@ -3,7 +3,7 @@
   "scripts": {
     "add": "node generate/add.js",
     "reset": "node generate/reset.js",
-    "serve": "node server/api.js",
+    "serve": "node server/model/model.js",
     "train": "node training/train.js",
     "learn": "./learn.bash",
     "predict": "node training/predict.js"

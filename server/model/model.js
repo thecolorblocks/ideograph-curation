@@ -1,7 +1,8 @@
 import express from "express"
 import { JSONFilePreset } from 'lowdb/node'
-import config from '../config.js'
+import config from '../../config.js'
 import Mustache from 'mustache'
+import { getParam } from "../../command.js"
 
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
@@ -10,12 +11,16 @@ import { promises as fs } from 'fs'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+const args = process.argv.slice(2)
+
+const modelname = getParam(args, '--model-name', true)
+
 const defaultData = {
   collection: []
 }
-const db = await JSONFilePreset(config.db_path, defaultData)
-const baddb = await JSONFilePreset(config.baddb_path, defaultData)
-const model1a_bad = await JSONFilePreset(config.model1a_bad_path, defaultData)
+
+const db = await JSONFilePreset(config[modelname].good_path, defaultData)
+const baddb = await JSONFilePreset(config[modelname].bad_path, defaultData)
 
 const app = express()
 const port = 8000
@@ -42,7 +47,7 @@ for (let key in mustacheParamsCopy) {
 }
 
 app.get('/', async (req, res) => {
-  res.json('The STRANGE IDEOGRAPH curation API server.')
+  res.json('The STRANGE IDEOGRAPH model1a API server.')
 })
 
 app.get('/items/:page', async (req, res) => {
@@ -69,11 +74,8 @@ app.delete('/item/:index', async (req, res) => {
   let item = db.data.collection[index]
   await baddb.read()
   await db.read()
-  await model1a_bad.read()
   baddb.data.collection.push(db.data.collection[index])
-  model1a_bad.data.collection.push(db.data.collection[index])
   await baddb.write()
-  await model1a_bad.write()
   db.data.collection.splice(index, 1)
   await db.write()
   res.json({
@@ -97,14 +99,14 @@ app.get('/stats', async (req, res) => {
 })
 
 app.get('/curate', async (req, res) => {
-  const html = __dirname + '/curate.html'
+  const html = __dirname + '/model.html'
   res.sendFile(html)
 })
 
 app.get('/curate/item/:b64', async (req, res) => {
   let params = Buffer.from(req.params.b64, 'base64').toString('utf-8')
 
-  const mustachePath = __dirname + '/ideographViewer.mustache'
+  const mustachePath = __dirname + '/../ideographViewer.mustache'
   const mustacheStr = await fs.readFile(mustachePath, 'utf8')
   const htmlStr = Mustache.render(mustacheStr, {
     style: mustacheParamsCopy.style.mainnet,
@@ -118,5 +120,5 @@ app.get('/curate/item/:b64', async (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log(`STRANGE IDEOGRAPH server listening on port ${port}...`)
+  console.log(`STRANGE IDEOGRAPH ${modelname} listening on port ${port}...`)
 })
