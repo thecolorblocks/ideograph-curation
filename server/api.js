@@ -15,7 +15,6 @@ const defaultData = {
 }
 const db = await JSONFilePreset(config.db_path, defaultData)
 const baddb = await JSONFilePreset(config.baddb_path, defaultData)
-const model1a_bad = await JSONFilePreset(config.model1a_bad_path, defaultData)
 
 const app = express()
 const port = 8000
@@ -69,11 +68,8 @@ app.delete('/item/:index', async (req, res) => {
   let item = db.data.collection[index]
   await baddb.read()
   await db.read()
-  await model1a_bad.read()
   baddb.data.collection.push(db.data.collection[index])
-  model1a_bad.data.collection.push(db.data.collection[index])
   await baddb.write()
-  await model1a_bad.write()
   db.data.collection.splice(index, 1)
   await db.write()
   res.json({

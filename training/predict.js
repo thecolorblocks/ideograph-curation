@@ -24,8 +24,8 @@ const baddb = await JSONFilePreset(config[modelname].bad_path, defaultData)
 
 const model = await tf.loadLayersModel(`${rootdir}/training/${modelname}/model.json`)
 
-const threshold = 0.5
-const iterations = 1000
+const threshold = Number(getParam(args, '--threshold', true))
+const iterations = 30000
 let data = []
 let params = []
 

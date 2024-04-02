@@ -5,8 +5,8 @@
     "reset": "node generate/reset.js",
     "serve": "node server/model/model.js",
     "train": "node training/train.js",
-    "learn": "./learn.bash",
-    "predict": "node training/predict.js"
+    "predict": "node training/predict.js",
+    "curate": "node server/api.js"
   },
   "dependencies": {
     "@tensorflow/tfjs-node": "^4.17.0",

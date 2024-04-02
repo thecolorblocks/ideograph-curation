@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const epochs = 500
-const sessions = 20
+const sessions = 10
 
 const earlyStoppingCallback = tf.callbacks.earlyStopping({
   monitor: 'loss',
