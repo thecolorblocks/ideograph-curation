@@ -13,8 +13,8 @@ const __dirname = dirname(__filename)
 const defaultData = {
   collection: []
 }
-const db = await JSONFilePreset(config.db_path, defaultData)
-const baddb = await JSONFilePreset(config.baddb_path, defaultData)
+const db = await JSONFilePreset(config.final.good_path, defaultData)
+const baddb = await JSONFilePreset(config.final.bad_path, defaultData)
 
 const app = express()
 const port = 8000
